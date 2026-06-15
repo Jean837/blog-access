@@ -130,26 +130,6 @@
                 </div>
             </div>
 
-            {{-- Newsletter --}}
-            <div>
-                <h3 class="text-white font-semibold mb-4">🔔 Newsletter</h3>
-                <p class="text-sm mb-3">Recevez les actus énergie et les alertes subventions.</p>
-                @if(session('newsletter_success'))
-                    <div class="bg-green-800/50 text-green-300 px-3 py-2 rounded-lg text-sm mb-3">
-                        {{ session('newsletter_success') }}
-                    </div>
-                @endif
-                <form method="POST" action="{{ route('newsletter.subscribe') }}" class="flex gap-2">
-                    @csrf
-                    <input type="email" name="email" placeholder="votre@email.com"
-                           class="flex-1 bg-gray-800 border border-gray-700 text-white rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-orange-500">
-                    <button type="submit"
-                            class="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg text-sm transition">
-                        ✉️
-                    </button>
-                </form>
-            </div>
-
             {{-- Thématiques --}}
             <div>
                 <h3 class="text-white font-semibold mb-4">🏷️ Thématiques</h3>
