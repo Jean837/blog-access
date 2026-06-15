@@ -30,14 +30,25 @@ class BlogController extends Controller
 
         $posts      = $query->paginate(6);
         $categories = Category::withCount('posts')->get();
-        $featured   = Post::where('status','published')->orderBy('views','desc')->first();
+        $featured   = Post::where('status', 'published')
+                          ->orderBy('views', 'desc')
+                          ->first();
 
         return view('blog.index', compact('posts', 'categories', 'featured'));
     }
 
     // Page d'un article
     public function show(string $slug) {
-        $post = Post::with('category','user','comments.user')
+        $post = Post::with([
+                        'category',
+                        'user',
+                        'comments' => function($q) {
+                            $q->whereNull('parent_id')
+                              ->where('is_approved', true)
+                              ->with(['user', 'replies.user'])
+                              ->orderBy('created_at', 'desc');
+                        }
+                    ])
                     ->where('slug', $slug)
                     ->where('status', 'published')
                     ->firstOrFail();
@@ -53,17 +64,21 @@ class BlogController extends Controller
         return view('blog.show', compact('post', 'related'));
     }
 
-    // Poster un commentaire
+    // Poster un commentaire ou une réponse
     public function comment(Request $request, Post $post) {
-        $request->validate(['content' => 'required|string|max:1000']);
+        $request->validate([
+            'content'   => 'required|string|max:1000',
+            'parent_id' => 'nullable|exists:comments,id',
+        ]);
 
         Comment::create([
             'content'     => $request->content,
             'post_id'     => $post->id,
             'user_id'     => Auth::id(),
-            'is_approved' => false,
+            'parent_id'   => $request->parent_id ?? null,
+            'is_approved' => true,
         ]);
 
-        return back()->with('success', '💬 Commentaire envoyé, en attente de validation.');
+        return back();
     }
 }

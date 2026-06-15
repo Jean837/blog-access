@@ -39,30 +39,51 @@
         </div>
     </div>
 
-    {{-- Statistiques --}}
-    <div class="relative bg-black/20 backdrop-blur-sm">
-        <div class="max-w-6xl mx-auto px-4 py-6">
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
-                <div>
-                    <div class="text-3xl font-extrabold text-yellow-200">5.5</div>
-                    <div class="text-sm text-white/80">kWh/m²/jour d'ensoleillement</div>
+   {{-- Statistiques --}}
+<div class="relative bg-black/20 backdrop-blur-sm">
+    <div class="max-w-6xl mx-auto px-4 py-6">
+        <div class="grid grid-cols-2 md:grid-cols-5 gap-6 text-center">
+            <div>
+                <div class="text-3xl font-extrabold text-yellow-200">5.5</div>
+                <div class="text-sm text-white/80">kWh/m²/jour</div>
+            </div>
+            <div>
+                <div class="text-3xl font-extrabold text-yellow-200">&lt;40%</div>
+                <div class="text-sm text-white/80">Électrification rurale</div>
+            </div>
+            <div>
+                <div class="text-3xl font-extrabold text-yellow-200">-80%</div>
+                <div class="text-sm text-white/80">Coût solaire en 10 ans</div>
+            </div>
+            <div>
+                <div class="text-3xl font-extrabold text-yellow-200">60%</div>
+                <div class="text-sm text-white/80">Couverture mobile money</div>
+            </div>
+            <div>
+                <div class="text-3xl font-extrabold text-yellow-200" id="hero-waitlist-count">
+                    {{ \App\Models\Waitlist::count() }}
                 </div>
-                <div>
-                    <div class="text-3xl font-extrabold text-yellow-200">&lt;40%</div>
-                    <div class="text-sm text-white/80">Électrification rurale actuelle</div>
-                </div>
-                <div>
-                    <div class="text-3xl font-extrabold text-yellow-200">-80%</div>
-                    <div class="text-sm text-white/80">Coût du solaire en 10 ans</div>
-                </div>
-                <div>
-                    <div class="text-3xl font-extrabold text-yellow-200">60%</div>
-                    <div class="text-sm text-white/80">Couverture paiement mobile</div>
-                </div>
+                <div class="text-sm text-white/80">en liste d'attente 🚀</div>
             </div>
         </div>
     </div>
-</section>
+</div>
+
+{{-- Script compteur live --}}
+<script>
+function refreshHeroCounter() {
+    fetch('/waitlist/count')
+        .then(r => r.json())
+        .then(data => {
+            const el = document.getElementById('hero-waitlist-count');
+            if (el && data.count !== undefined) {
+                el.textContent = data.count;
+            }
+        })
+        .catch(() => {});
+}
+setInterval(refreshHeroCounter, 30000);
+</script>
 
 {{-- ARTICLE À LA UNE --}}
 @if($featured)

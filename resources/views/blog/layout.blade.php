@@ -26,6 +26,12 @@
             </div>
         </a>
 
+        {{-- Lien plateforme --}}
+        <a href="{{ route('blog.about') }}"
+           class="hidden md:block text-sm text-gray-600 dark:text-gray-300 hover:text-orange-500 font-medium transition whitespace-nowrap">
+            🚀 La plateforme
+        </a>
+
         {{-- Recherche --}}
         <form method="GET" action="{{ route('blog.index') }}" class="hidden md:flex flex-1 max-w-sm">
             <div class="relative w-full">
@@ -39,20 +45,17 @@
         {{-- Menu droit --}}
         <div class="flex items-center gap-3">
 
-            {{-- Bouton dark mode --}}
             <button onclick="toggleDarkMode()" id="dark-mode-btn"
                     class="w-9 h-9 flex items-center justify-center rounded-full bg-gray-100 dark:bg-gray-800 hover:bg-orange-100 transition text-lg"
                     title="Changer le thème">🌙</button>
 
             @auth
                 @if(auth()->user()->isAdmin())
-                    {{-- Bouton Admin --}}
                     <a href="{{ route('admin.dashboard') }}"
                        class="text-sm bg-orange-500 text-white px-4 py-2 rounded-full hover:bg-orange-600 transition font-semibold shadow">
                         ⚙️ Admin
                     </a>
                 @else
-                    {{-- Utilisateur normal --}}
                     <div class="flex items-center gap-2">
                         <div class="w-8 h-8 bg-gradient-to-br from-orange-400 to-yellow-400 rounded-full flex items-center justify-center text-white font-bold text-xs shadow">
                             {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
@@ -70,7 +73,6 @@
                     </div>
                 @endif
             @else
-                {{-- Non connecté --}}
                 <a href="{{ route('login') }}"
                    class="text-sm text-gray-600 dark:text-gray-300 hover:text-orange-500 font-medium transition">
                     Connexion
@@ -87,9 +89,11 @@
 {{-- CONTENU --}}
 <main>
     @if(session('success'))
-        <div class="max-w-6xl mx-auto px-4 mt-4">
-            <div class="bg-green-100 text-green-700 px-4 py-3 rounded-xl border border-green-200">
-                ✅ {{ session('success') }}
+        <div class="max-w-6xl mx-auto px-4 mt-4" id="flash-message">
+            <div class="bg-green-100 text-green-700 px-4 py-3 rounded-xl border border-green-200 flex items-center justify-between">
+                <span>✅ {{ session('success') }}</span>
+                <button onclick="document.getElementById('flash-message').remove()"
+                        class="text-green-500 hover:text-green-700 ml-4 text-lg font-bold">×</button>
             </div>
         </div>
     @endif
@@ -123,11 +127,35 @@
                     Votre source d'information sur les solutions énergétiques accessibles
                     pour les ménages et entreprises du Bénin.
                 </p>
-                <div class="flex gap-3 mt-4">
+                <div class="flex gap-3 mt-4 flex-wrap">
                     <span class="text-xs bg-orange-900/40 text-orange-400 px-3 py-1 rounded-full">☀️ Solaire</span>
                     <span class="text-xs bg-green-900/40 text-green-400 px-3 py-1 rounded-full">🌍 Bénin</span>
                     <span class="text-xs bg-yellow-900/40 text-yellow-400 px-3 py-1 rounded-full">⚡ PAYG</span>
                 </div>
+                <a href="{{ route('blog.about') }}"
+                   class="inline-block mt-4 text-sm text-orange-400 hover:text-orange-300 transition">
+                    En savoir plus sur la plateforme →
+                </a>
+            </div>
+
+            {{-- Newsletter --}}
+            <div>
+                <h3 class="text-white font-semibold mb-4">🔔 Newsletter</h3>
+                <p class="text-sm mb-3">Recevez les actus énergie et les alertes subventions.</p>
+                @if(session('newsletter_success'))
+                    <div class="bg-green-800/50 text-green-300 px-3 py-2 rounded-lg text-sm mb-3">
+                        {{ session('newsletter_success') }}
+                    </div>
+                @endif
+                <form method="POST" action="{{ route('newsletter.subscribe') }}" class="flex gap-2">
+                    @csrf
+                    <input type="email" name="email" placeholder="votre@email.com"
+                           class="flex-1 bg-gray-800 border border-gray-700 text-white rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-orange-500">
+                    <button type="submit"
+                            class="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg text-sm transition">
+                        ✉️
+                    </button>
+                </form>
             </div>
 
             {{-- Thématiques --}}

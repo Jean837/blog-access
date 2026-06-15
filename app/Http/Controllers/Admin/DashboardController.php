@@ -6,6 +6,7 @@ use App\Models\Category;
 use App\Models\Comment;
 use App\Models\Post;
 use App\Models\User;
+use App\Models\Waitlist;
 
 class DashboardController extends Controller
 {
@@ -19,21 +20,16 @@ class DashboardController extends Controller
             'pending_comments' => Comment::where('is_approved', false)->count(),
             'total_users'      => User::count(),
             'total_categories' => Category::count(),
+            'waitlist_count'   => Waitlist::count(),
         ];
 
-        // 5 articles les plus vus
-        $topPosts = Post::where('status', 'published')
-                        ->orderBy('views', 'desc')
-                        ->limit(5)->get();
-
-        // 5 derniers commentaires en attente
-        $pendingComments = Comment::with('post', 'user')
-                                  ->where('is_approved', false)
-                                  ->latest()->limit(5)->get();
-
-        // Articles par catégorie (pour le graphique)
+        $topPosts        = Post::where('status', 'published')->orderBy('views', 'desc')->limit(5)->get();
+        $pendingComments = Comment::with('post', 'user')->where('is_approved', false)->latest()->limit(5)->get();
         $postsByCategory = Category::withCount('posts')->get();
+        $latestWaitlist  = Waitlist::latest()->limit(5)->get();
 
-        return view('admin.dashboard', compact('stats', 'topPosts', 'pendingComments', 'postsByCategory'));
+        return view('admin.dashboard', compact(
+            'stats', 'topPosts', 'pendingComments', 'postsByCategory', 'latestWaitlist'
+        ));
     }
 }
