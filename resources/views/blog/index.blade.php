@@ -181,12 +181,15 @@ setInterval(refreshHeroCounter, 30000);
         <article class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden group border border-gray-100 dark:border-gray-700">
             <a href="{{ route('blog.show', $post->slug) }}" class="block overflow-hidden h-48">
                 @if($post->cover_image)
-                    <img src="{{ Storage::url($post->cover_image) }}"
-                         class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                   <img src="{{ Storage::url($post->cover_image) }}"
+                 class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                @elseif($post->category->image_url)
+                  <img src="{{ $post->category->image_url }}"
+                   class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
                 @else
                     <div class="w-full h-full flex items-center justify-center text-6xl"
-                         style="background: linear-gradient(135deg, {{ $post->category->color ?? '#F97316' }}33, {{ $post->category->color ?? '#F97316' }}11)">
-                        ☀️
+                      style="background: linear-gradient(135deg, {{ $post->category->color ?? '#F97316' }}33, {{ $post->category->color ?? '#F97316' }}11)">
+                      ☀️
                     </div>
                 @endif
             </a>

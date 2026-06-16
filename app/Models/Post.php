@@ -55,4 +55,18 @@ class Post extends Model
         $words = str_word_count(strip_tags($this->content));
         return max(1, (int) ceil($words / 200));
     }
+
+    public function ratings() {
+       return $this->hasMany(Rating::class);
+    }
+
+    public function averageRating(): float {
+       return round($this->ratings()->avg('stars') ?? 0, 1);
+    }
+
+    public function userRating(): ?int {
+       if (!auth()->check()) return null;
+       return $this->ratings()->where('user_id', auth()->id())->value('stars');
+    }
+
 }
